@@ -1,1 +1,2 @@
-vps01.svenv.nl
+[webservers]
+vps[01:02].svenv.nl
