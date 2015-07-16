@@ -10,14 +10,14 @@
     name=svenv/svenv.nl
     state=build
 
-- name: check for svenv.nl container
-  command: docker ps -f name=svenv.nl
-  register: container_check
-  changed_when: container_check.stdout.find('svenv.nl') != -1
-
-- name: stop svenv/svenv.nl container
-  command: /srv/svenv.nl-docker/stopdocker.sh
-  when: container_check.stdout.find('svenv.nl') != -1
-
 - name: start svenv/svenv.nl container
-  command: /srv/svenv.nl-docker/rundocker.sh
+  docker:
+    name: svenv.nl
+    volumes:
+    - /srv/svenv.nl-docker/data/var/lib/mysql/:/var/lib/mysql/
+    - /srv/svenv.nl-docker/data/svenv.nl/svenv/media:/svenv.nl/svenv/media
+    ports:
+    - 80:80
+    - 3306:3306
+    image: svenv/svenv.nl
+    docker_api_version: 1.18  # http://stackoverflow.com/questions/31459513
