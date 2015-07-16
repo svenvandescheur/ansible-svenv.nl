@@ -9,24 +9,31 @@
 - name: install unattended-upgrades
   apt: name=unattended-upgrades state=present
 
-- name: config unattended-upgrades
-  template: src=10periodic dest=/etc/apt/apt.conf.d/
-  template: src=50unattended-upgrades dest=/etc/apt/apt.conf.d/
+- name: config unattended-upgrades 1/2
+  template: src=10periodic.j2 dest=/etc/apt/apt.conf.d/10periodic
+- name: config unattended-upgrades 2/2
+  template: src=50unattended-upgrades.j2 dest=/etc/apt/apt.conf.d/50unattended-upgrades
 
 - name: install git
   apt: name=git state=present
 
 - name: config git
-  command: git config --global user.name "Sven van de Scheur"
-  command: git config --global user.email svenvandescheur@gmail.com
+  template: src=.gitconfig.j2 dest=/root/.gitconfig
 
 - name: install fish
   apt: name=fish state=present
+
+- name: check for docker installation
+  command: docker -v
+  register: docker_check
+  changed_when: docker_check.stdout.find('Docker version') == -1
 
 - name: download docker install script
   get_url:
     url=https://get.docker.com/ubuntu/
     dest=/tmp/install_docker.sh
+  when: docker_check.stdout.find('Docker version') == -1
 
 - name: install docker
   command: /bin/bash /tmp/install_docker.sh
+  when: docker_check.stdout.find('Docker version') == -1
