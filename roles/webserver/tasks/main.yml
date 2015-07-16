@@ -21,3 +21,7 @@
     - 3306:3306
     image: svenv/svenv.nl
     docker_api_version: 1.18  # http://stackoverflow.com/questions/31459513
+    state: restarted
+
+- name: add svenv.nl upstart job
+  template: src=svenv.nl.conf.j2 dest=/etc/init/svenv.nl.conf

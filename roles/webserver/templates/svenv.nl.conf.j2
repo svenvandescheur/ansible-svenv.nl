@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+description "Svenv.nl container"
+author "Sven van de Scheur <svenvandescheur@gmail.com>"
+start on filesystem and started docker
+stop on runlevel [!2345]
+respawn
+script
+  /srv/svenv.nl-docker/rundocker.sh
+end script
