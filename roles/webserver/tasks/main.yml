@@ -1,0 +1,23 @@
+---
+# file: main.yml
+- name: clone svenv.nl-docker from github
+  git:
+    repo=https://github.com/svenvandescheur/svenv.nl-docker.git dest=/srv/svenv.nl-docker
+
+- name: check or build image
+  docker_image:
+    path=/srv/svenv.nl-docker
+    name=svenv/svenv.nl
+    state=build
+
+- name: check for svenv.nl container
+  command: docker ps -f name=svenv.nl
+  register: container_check
+  changed_when: container_check.stdout.find('svenv.nl') != -1
+
+- name: stop svenv/svenv.nl container
+  command: /srv/svenv.nl-docker/stopdocker.sh
+  when: container_check.stdout.find('svenv.nl') != -1
+
+- name: start svenv/svenv.nl container
+  command: /srv/svenv.nl-docker/rundocker.sh

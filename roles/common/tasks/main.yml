@@ -29,11 +29,15 @@
   changed_when: docker_check.stdout.find('Docker version') == -1
 
 - name: download docker install script
-  get_url:
-    url=https://get.docker.com/ubuntu/
-    dest=/tmp/install_docker.sh
+  get_url: url=https://get.docker.com/ubuntu/ dest=/tmp/install_docker.sh
   when: docker_check.stdout.find('Docker version') == -1
 
 - name: install docker
   command: /bin/bash /tmp/install_docker.sh
   when: docker_check.stdout.find('Docker version') == -1
+
+- name: install python-pip
+  apt: name=python-pip state=present
+
+- name: install docker-py
+  pip: name=docker-py state=present
