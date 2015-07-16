@@ -24,7 +24,7 @@
   apt: name=fish state=present
 
 - name: config fish
-  command: chsh -s /usr/bin/fish
+  user: name=root shell=/usr/bin/fish
 
 - name: install figlet
   apt: name=figlet state=present
