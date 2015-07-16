@@ -23,6 +23,18 @@
 - name: install fish
   apt: name=fish state=present
 
+- name: config fish
+  command: chsh -s /usr/bin/fish
+
+- name: install figlet
+  apt: name=figlet state=present
+
+- name: configure update-motd 1/2
+  template: src=00-header.j2 dest=/etc/update-motd.d/00-header
+
+- name: configure update-motd 2/2
+  template: src=10-help-text.j2 dest=/etc/update-motd.d/10-help-text
+
 - name: check for docker installation
   command: docker -v
   register: docker_check

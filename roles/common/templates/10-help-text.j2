@@ -1,0 +1,22 @@
+#!/bin/sh
+# {{ ansible_managed }}
+#
+hostname=$(hostname)
+address=$(ifconfig eth0 | grep "inet " | awk {'print $2'} | cut -b 6-)
+kernel=$(uname -r)
+uptime=$(uptime)
+root_used=$(df -h / | awk {'print $5'} | grep -v "Use")
+memory_used=$(free | grep Mem | awk '{print $3/$2 * 100.0}')
+swap_used=$(free | grep Swap | awk '{print $3/$2 * 100.0}')
+
+echo This is an ANSIBLE MANAGED machine
+echo
+echo Hostname: $hostname
+echo Address: $address
+echo Kernel: $kernel
+echo
+echo Uptime: $uptime
+echo Root \"/\" used: $root_used%
+echo Memory used: $memory_used%
+echo Swap used: $swap_used%
+echo
