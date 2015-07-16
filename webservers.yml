@@ -1,0 +1,6 @@
+---
+# file: webservers.yml
+- hosts: webservers
+  sudo: yes
+  roles:
+    - common
