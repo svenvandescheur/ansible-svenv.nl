@@ -49,7 +49,7 @@
   when: docker_check.stdout.find('Docker version') == -1
 
 - name: install python-pip
-  apt: name=python-pip state=present
+  apt: name=python-pip state=latest
 
 - name: install docker-py
   pip: name=docker-py state=present
