@@ -5,3 +5,5 @@
   roles:
     - common
     - webserver
+  vars_files:
+    - roles/webserver/vars/keys.yml

@@ -2,9 +2,12 @@
 # file: main.yml
 - name: clone svenv.nl-docker from github
   git:
-    repo=https://github.com/svenvandescheur/svenv.nl-docker.git dest=/srv/svenv.nl-docker
+    repo=https://github.com/svenvandescheur/svenv.nl-docker.git dest=/srv/svenv.nl-docker force=yes
 
-- name: check or build image
+- name: add tarsnap key to docker
+  copy: content="{{ tarsnap }}" dest=/srv/svenv.nl-docker/files/root/tarsnap.key
+
+- name: build image
   docker_image:
     path=/srv/svenv.nl-docker
     name=svenv/svenv.nl
