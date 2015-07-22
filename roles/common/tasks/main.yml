@@ -26,6 +26,9 @@
 - name: config fish
   user: name=root shell=/usr/bin/fish
 
+- name: install sl
+  apt: name=sl state=present
+
 - name: install figlet
   apt: name=figlet state=present
 
