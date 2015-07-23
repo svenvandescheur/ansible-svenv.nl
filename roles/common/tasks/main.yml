@@ -3,6 +3,9 @@
 - name: apt-get update
   apt: update_cache=yes
 
+- name: Speed up Ansible by purging landscape-common
+  apt: pkg=landscape-common state=absent purge=yes
+
 - name: install mailutils
   apt: name=mailutils state=present
 
