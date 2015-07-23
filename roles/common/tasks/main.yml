@@ -46,16 +46,17 @@
 
 - name: check for docker installation
   command: docker -v
+  ignore_errors: yes
   register: docker_check
-  changed_when: docker_check.stdout.find('Docker version') == -1
+  changed_when: docker_check|failed
 
 - name: download docker install script
   get_url: url=https://get.docker.com/ubuntu/ dest=/tmp/install_docker.sh
-  when: docker_check.stdout.find('Docker version') == -1
+  when: docker_check|failed
 
 - name: install docker
   command: /bin/bash /tmp/install_docker.sh
-  when: docker_check.stdout.find('Docker version') == -1
+  when: docker_check|failed
 
 - name: install python-pip
   apt: name=python-pip state=latest
