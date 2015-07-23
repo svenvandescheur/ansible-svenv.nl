@@ -1,9 +1,0 @@
----
-# file: webservers.yml
-- hosts: webservers
-  sudo: yes
-  roles:
-    - common
-    - webserver
-  vars_files:
-    - roles/webserver/vars/keys.yml

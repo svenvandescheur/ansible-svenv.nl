@@ -1,2 +1,2 @@
-[webservers]
-app2.svenv.nl
+[appservers]
+app2.svenv.nl env=staging

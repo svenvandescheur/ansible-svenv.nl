@@ -17,7 +17,7 @@
   docker:
     name: svenv.nl
     env:
-      environment: production
+      environment: "{{ env }}"
     ports:
     - 80:80
     - 3306:3306
