@@ -16,9 +16,8 @@
 - name: start svenv/svenv.nl container
   docker:
     name: svenv.nl
-    volumes:
-    - /srv/svenv.nl-docker/data/var/lib/mysql/:/var/lib/mysql/
-    - /srv/svenv.nl-docker/data/svenv.nl/svenv/media:/svenv.nl/svenv/media
+    env:
+      environment: production
     ports:
     - 80:80
     - 3306:3306
