@@ -7,17 +7,19 @@
 - name: add tarsnap key to docker
   copy: content="{{ tarsnap }}" dest=/srv/svenv.nl-docker/files/root/tarsnap.key
 
+- name: add environment file
+  template: src=environment.j2 dest=/srv/svenv.nl-docker/files/etc/environment
+
 - name: build image
   docker_image:
     path=/srv/svenv.nl-docker
     name=svenv/svenv.nl
+    nocache=yes
     state=build
 
 - name: start svenv/svenv.nl container
   docker:
     name: svenv.nl
-    env:
-      environment: "{{ env }}"
     ports:
     - 80:80
     - 3306:3306
