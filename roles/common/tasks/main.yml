@@ -3,6 +3,30 @@
 - name: apt-get update
   apt: update_cache=yes
 
+- name: install ufw
+  apt: name=ufw state=present
+
+- name: 'config ufw: reset ufw'
+  ufw: state=reset
+
+- name: 'config ufw: add /etc/default/ufw'
+  template: src=ufw.j2 dest=/etc/default/ufw
+
+- name: 'config ufw: add /etc/ufw/sysctl.conf'
+  template: src=sysctl.conf.j2 dest=/etc/ufw/sysctl.conf
+
+- name: 'config ufw: add /etc/ufw/before.rules'
+  template: src=before.rules.j2 dest=/etc/ufw/before.rules
+
+- name: 'config ufw: allow ssh'
+  ufw: rule=allow port=22 proto=tcp
+
+- name: 'config ufw: allow docker'
+  ufw: rule=allow port=2375 proto=tcp
+
+- name: 'config ufw: reject all other traffic'
+  ufw: state=enabled policy=deny
+
 - name: Speed up Ansible by purging landscape-common
   apt: pkg=landscape-common state=absent purge=yes
 
@@ -57,6 +81,14 @@
 - name: install docker
   command: /bin/bash /tmp/install_docker.sh
   when: docker_check|failed
+
+- name: configure docker
+  template: src=docker.j2 dest=/etc/default/docker
+  register: docker_config
+
+- name: restart docker
+  service: name=docker state=restarted
+  when: docker_config.changed
 
 - name: install python-pip
   apt: name=python-pip state=latest

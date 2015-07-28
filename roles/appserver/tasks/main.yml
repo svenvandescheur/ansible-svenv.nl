@@ -1,5 +1,11 @@
 ---
 # file: main.yml
+- name: 'config ufw: allow http'
+  ufw: rule=allow port=80 proto=tcp
+
+- name: 'config ufw: allow mysql'
+  ufw: rule=allow port=3306 proto=tcp
+
 - name: clone svenv.nl-docker from github
   git:
     repo=https://github.com/svenvandescheur/svenv.nl-docker.git dest=/srv/svenv.nl-docker force=yes
