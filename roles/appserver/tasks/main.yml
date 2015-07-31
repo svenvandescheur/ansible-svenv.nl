@@ -3,6 +3,9 @@
 - name: 'config ufw: allow http'
   ufw: rule=allow port=80 proto=tcp
 
+- name: 'config ufw: allow ssl'
+  ufw: rule=allow port=443 proto=tcp
+
 - name: 'config ufw: allow mysql'
   ufw: rule=allow port=3306 proto=tcp
 
@@ -12,6 +15,12 @@
 
 - name: add tarsnap key to docker
   copy: content="{{ tarsnap }}" dest=/srv/svenv.nl-docker/files/root/tarsnap.key
+
+- name: add ssl certificate
+  copy: content="{{ svenv_nl_crt }}" dest=/srv/svenv.nl-docker/files/etc/ssl/certs/svenv.nl.crt
+
+- name: add ssl certificate keyfile
+  copy: content="{{ svenv_nl_key }}" dest=/srv/svenv.nl-docker/files/etc/ssl/certs/svenv.nl.key
 
 - name: add environment file
   template: src=environment.j2 dest=/srv/svenv.nl-docker/files/etc/environment
@@ -34,6 +43,7 @@
     name: svenv.nl
     ports:
     - 80:80
+    - 443:443
     - 3306:3306
     image: svenv/svenv.nl
     docker_api_version: 1.18  # http://stackoverflow.com/questions/31459513
