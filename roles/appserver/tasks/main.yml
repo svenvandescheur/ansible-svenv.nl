@@ -22,6 +22,9 @@
 - name: add ssl certificate keyfile
   copy: content="{{ svenv_nl_key }}" dest=/srv/svenv.nl-docker/files/etc/ssl/certs/svenv.nl.key
 
+- name: add dh params
+  copy: content="{{ dhparams }}" dest=/srv/svenv.nl-docker/files/etc/ssl/certs/dhparams.pem
+
 - name: add environment file
   template: src=environment.j2 dest=/srv/svenv.nl-docker/files/etc/environment
 
