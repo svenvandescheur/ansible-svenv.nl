@@ -44,6 +44,9 @@
 - name: config openssh
   template: src=sshd_config.j2 dest=/etc/ssh/sshd_config
 
+- name: config pam
+  template: src=login.j2 dest=/etc/pam.d/login
+
 - name: install git
   apt: name=git state=present
 
