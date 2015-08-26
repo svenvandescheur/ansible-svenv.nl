@@ -1,0 +1,11 @@
+---
+language:
+  - 'python'
+python:
+  - '2.7'
+install:
+  - 'pip install ansible'
+  - 'truncate -s 0 roles/appserver/vars/keys.yml'
+  - 'truncate -s 0 ansible.cfg'
+script:
+  - 'ansible-playbook site.yml -i staging --syntax-check'
