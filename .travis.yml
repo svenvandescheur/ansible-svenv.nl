@@ -7,6 +7,6 @@ python:
 install:
   - 'pip install ansible'
   - 'truncate -s 0 roles/appserver/vars/keys.yml'
-  - 'sed -i "" "/ask_vault_pass/d" ansible.cfg'
+  - 'truncate -s 0 ansible.cfg'
 script:
-  - 'ansible-playbook site.yml --syntax-check'
+  - 'ansible-playbook site.yml -i staging --syntax-check'
