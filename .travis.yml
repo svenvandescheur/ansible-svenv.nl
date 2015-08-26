@@ -1,0 +1,13 @@
+---
+env:
+  global:
+    secure: 'u5YHUDVTmiUicL050U2fcYvBF/vOsIgcwYPi1DRgiKCzrPeAt01rCM8+V/n11TysjJ0XkVBXiIumxyjViTrCzBDhUsxlrMZB2XpTLDq7ofQTvLeuzfBQZt3sdUyUA64VAGtOXXqZ8jgWrXMuXTb6Ad+73uyWNEOih6chPxrxgb2rIBzHsZU3HjpiAvp59xYtDx17oRqBc85r+vDmVYpoMPYYsZ1HaS4uMGwttwi3bfNLu0h6GDRQykC5EOXlaGZC5WN2A8bifBhTJKUbB/q+kHWk/2KOX4SKpRSvKiRXpdYg+d6WdHvurGqerzWbXwGvq6UNITYAP0dE3cjjHY1Yh4Ez0UBukCYORSdoSzQbbfjBXBE7m056/1p0KwPBBoFiYPvl6plcgRos9ODFzd7bpJYsJbvdLqwycYmqVbPENT4y1d3Bo4FUix6rC67bKHaLVSjCxMOFp4Tw0Q33yNMSrWR5GBJIqkIiNLYC7c3+HTfZVmqD63eUHF6PGunX15AVWOZW64jJp3Mzz9VB/wvFuFMPVuU3kMGbxnnLgIdbP/k8psZ44QlPSDwvRh7gYJWHsQr1Yg9/WA4ZBRSG/vbhIiG8cw8+QDvJAr0b5mCfZalvBHLUHEYu1gPiAjmLESwvh0wcH10zrnU9vaRRV6R5Wz0LXPa2q0qDBfryL1EaiTc='
+language:
+  - 'python'
+python:
+  - '2.7'
+  - '3.4'
+install:
+  - 'pip install ansible'
+script:
+  - 'echo $ANSIBLE_VAULT_PASSWORD'
