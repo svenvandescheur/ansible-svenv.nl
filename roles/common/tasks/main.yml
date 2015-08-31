@@ -65,6 +65,9 @@
 - name: install figlet
   apt: name=figlet state=present
 
+- name: install whois
+  apt: name=whois state=present
+
 - name: configure update-motd 1/2
   template: src=00-header.j2 dest=/etc/update-motd.d/00-header
 
