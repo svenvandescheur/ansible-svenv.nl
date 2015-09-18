@@ -1,27 +1,3 @@
 #!/bin/sh
 # {{ ansible_managed }}
-#
-hostname=$(hostname)
-address=$(ifconfig eth0 | grep "inet " | awk {'print $2'} | cut -b 6-)
-kernel=$(uname -r)
-
-uptime_seconds=$(cat /proc/uptime | awk '{print $1'} | rev | cut -b 4- | rev)
-uptime_days=$(expr $uptime_seconds / 60 / 60 / 24)
-
-root_used=$(df -h / | awk {'print $5'} | grep -v "Use")
-memory_used=$(free | grep Mem | awk '{print $3/$2 * 100.0}')
-
-echo This is an ANSIBLE MANAGED machine
-echo
-echo Hostname: $hostname
-echo Address: $address
-echo Kernel: $kernel
-echo
-echo Days up: $uptime_days
-echo Root \"/\" used: $root_used
-echo Memory used: $memory_used%
-
-if free | awk '/^Swap:/ {exit !$2}'; then
-        swap_used=$(free | grep Swap | awk '{print $3/$2 * 100.0}')
-        echo Swap used: $swap_used%
-fi
+screenfetch -n -d 'host distro kernel uptime disk cpu mem'

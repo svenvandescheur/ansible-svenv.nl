@@ -62,14 +62,20 @@
 - name: install sl
   apt: name=sl state=present
 
-- name: install figlet
-  apt: name=figlet state=present
+- name: install toilet
+  apt: name=toilet state=present
+
+- name: install screenfetch
+  get_url: url=https://raw.github.com/KittyKatt/screenFetch/master/screenfetch-dev dest=/usr/local/bin/screenfetch
+
+- name: config screenfetch
+  file: path=/usr/local/bin/screenfetch mode=0755
 
 - name: install whois
   apt: name=whois state=present
 
 - name: configure update-motd 1/2
-  template: src=00-header.j2 dest=/etc/update-motd.d/00-header
+  template: src=00-header.j2 dest=/etc/update-motd.d/00-header mode=0755
 
 - name: configure update-motd 2/2
   template: src=10-help-text.j2 dest=/etc/update-motd.d/10-help-text
