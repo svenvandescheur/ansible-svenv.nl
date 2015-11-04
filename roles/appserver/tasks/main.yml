@@ -29,32 +29,31 @@
   template: src=environment.j2 dest=/srv/svenv.nl-docker/files/etc/environment
 
 - name: build image
-  #docker_image:
-  #  path=/srv/svenv.nl-docker
-  #  name=svenv/svenv.nl
-  #  nocache=yes
-  #  state=build
-  shell: ./builddocker.sh chdir=/srv/svenv.nl-docker/
+#  docker_image:
+#    path=/srv/svenv.nl-docker
+#    name=svenv/svenv.nl
+#    nocache=yes
+#    state=build
+  shell: ./manage.sh build chdir=/srv/svenv.nl-docker/
 
 - name: stop svenv/svenv.nl container
-  #docker:
-  #  name: svenv.nl
-  #  image: svenv/svenv.nl
-  #  state: stopped
-  shell: ./stopdocker.sh chdir=/srv/svenv.nl-docker/
+#  docker:
+#    name: svenv.nl
+#    image: svenv/svenv.nl
+#    state: stopped
+  shell: ./manage.sh restart chdir=/srv/svenv.nl-docker/
 
-- name: start svenv/svenv.nl container
-  #docker:
-  #  name: svenv.nl
-  #  ports: [
-  #    "80:80",
-  #    "443:443",
-  #    "3306:3306"
-  #  ]
-  #  image: svenv/svenv.nl
-  #  docker_api_version: 1.18  # http://stackoverflow.com/questions/31459513
-  #  state: started
-  shell: ./rundocker.sh chdir=/srv/svenv.nl-docker/
+#- name: start svenv/svenv.nl container
+#  docker:
+#    name: svenv.nl
+#    ports: [
+#      "80:80",
+#      "443:443",
+#      "3306:3306"
+#    ]
+#    image: svenv/svenv.nl
+#    docker_api_version: 1.18  # http://stackoverflow.com/questions/31459513
+#    state: started
 
 - name: add svenv.nl upstart job
   template: src=svenv.nl.conf.j2 dest=/etc/init/svenv.nl.conf
