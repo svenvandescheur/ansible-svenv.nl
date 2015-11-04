@@ -90,7 +90,8 @@
   changed_when: docker_check|failed
 
 - name: download docker install script
-  get_url: url=https://get.docker.com/ubuntu/ dest=/tmp/install_docker.sh
+  # get_url: url=https://get.docker.com/ubuntu/ dest=/tmp/install_docker.sh
+  shell: curl https://get.docker.com/ubuntu/ > /tmp/install_docker.sh
   when: docker_check|failed
 
 - name: install docker
