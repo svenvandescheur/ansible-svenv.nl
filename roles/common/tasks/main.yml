@@ -62,6 +62,9 @@
 - name: config fish
   user: name=root shell=/usr/bin/fish
 
+- name: install ncdu
+  apt: name=ncdu state=present
+
 - name: install sl
   apt: name=sl state=present
 
