@@ -41,7 +41,7 @@
 #    name: svenv.nl
 #    image: svenv/svenv.nl
 #    state: stopped
-  shell: ./manage.sh restart chdir=/srv/svenv.nl-docker/
+  shell: ./manage.sh stop && ./manage.sh remove && ./manage.sh start chdir=/srv/svenv.nl-docker/
 
 #- name: start svenv/svenv.nl container
 #  docker:
