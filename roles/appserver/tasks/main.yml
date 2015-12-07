@@ -9,24 +9,45 @@
 - name: 'config ufw: allow mysql'
   ufw: rule=allow port=3306 proto=tcp
 
-- name: clone svenv.nl-docker from github
-  git:
-    repo=https://github.com/svenvandescheur/svenv.nl-docker.git dest=/srv/svenv.nl-docker force=yes
+- name: clone svenv.nl-docker-data from github
+  git: repo=https://github.com/svenvandescheur/svenv.nl-docker-data.git dest=/srv/svenv.nl-docker-data force=yes
 
 - name: add tarsnap key to docker
-  copy: content="{{ tarsnap }}" dest=/srv/svenv.nl-docker/files/root/tarsnap.key
+  copy: content="{{ tarsnap }}" dest=/srv/svenv.nl-docker-data/files/root/tarsnap.key
+
+- name: make sure the /srv/svenv.nl-docker-data/files/etc/ssl/certs/ directory exists
+  file: path=/srv/svenv.nl-docker-data/files/etc/ssl/certs/ state=directory
 
 - name: add ssl certificate
-  copy: content="{{ svenv_nl_crt }}" dest=/srv/svenv.nl-docker/files/etc/ssl/certs/svenv.nl.crt
+  copy: content="{{ svenv_nl_crt }}" dest=/srv/svenv.nl-docker-data/files/etc/ssl/certs/svenv.nl.crt
 
 - name: add ssl certificate keyfile
-  copy: content="{{ svenv_nl_key }}" dest=/srv/svenv.nl-docker/files/etc/ssl/certs/svenv.nl.key
+  copy: content="{{ svenv_nl_key }}" dest=/srv/svenv.nl-docker-data/files/etc/ssl/certs/svenv.nl.key
 
 - name: add dh params
-  copy: content="{{ dhparams }}" dest=/srv/svenv.nl-docker/files/etc/ssl/certs/dhparams.pem
+  copy: content="{{ dhparams }}" dest=/srv/svenv.nl-docker-data/files/etc/ssl/certs/dhparams.pem
 
 - name: add environment file
-  template: src=environment.j2 dest=/srv/svenv.nl-docker/files/etc/environment
+  template: src=environment.j2 dest=/srv/svenv.nl-docker-data/files/root/environment
+
+- name: build image
+#  docker_image:
+#    path=/srv/svenv.nl-docker-data
+#    name=svenv/svenv.nl-data
+#    nocache=yes
+#    state=build
+  shell: ./manage.sh build chdir=/srv/svenv.nl-docker-data/
+
+- name: stop/start svenv/svenv.nl-data container
+#  docker:
+#    name: svenv.nl
+#    image: svenv/svenv.nl
+#    state: stopped
+  shell: ./manage.sh stop && ./manage.sh remove && ./manage.sh start chdir=/srv/svenv.nl-docker-data/
+
+- name: clone svenv.nl-docker from github
+  git: repo=https://github.com/svenvandescheur/svenv.nl-docker.git dest=/srv/svenv.nl-docker force=yes
+  register: svenvnl
 
 - name: build image
 #  docker_image:
@@ -35,8 +56,9 @@
 #    nocache=yes
 #    state=build
   shell: ./manage.sh build chdir=/srv/svenv.nl-docker/
+  when: svenvnl.changed
 
-- name: stop svenv/svenv.nl container
+- name: stop/start svenv/svenv.nl container
 #  docker:
 #    name: svenv.nl
 #    image: svenv/svenv.nl

@@ -1,3 +1,10 @@
 ---
 # file: site.yml
-- include: appservers.yml
+- hosts: appservers
+  roles:
+    - common
+    - appserver
+    - vpnserver
+  vars_files:
+    - roles/appserver/vars/keys.yml
+    - roles/vpnserver/vars/keys.yml

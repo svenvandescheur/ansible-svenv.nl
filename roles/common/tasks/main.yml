@@ -56,11 +56,17 @@
 - name: config git
   template: src=.gitconfig.j2 dest=/root/.gitconfig
 
+- name: install zip
+  apt: name=zip state=present
+
 - name: install fish
   apt: name=fish state=present
 
-- name: config fish
+- name: config fish 1/2
   user: name=root shell=/usr/bin/fish
+
+- name: config fish 2/2
+  template: src=config.fish.j2 dest=/root/.config/fish/config.fish
 
 - name: install ncdu
   apt: name=ncdu state=present
@@ -94,7 +100,7 @@
 
 - name: download docker install script
   # get_url: url=https://get.docker.com/ubuntu/ dest=/tmp/install_docker.sh
-  shell: curl https://get.docker.com/ubuntu/ > /tmp/install_docker.sh
+  shell: curl https://get.docker.com/ > /tmp/install_docker.sh
   when: docker_check|failed
 
 - name: install docker

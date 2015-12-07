@@ -1,3 +1,6 @@
 #!/bin/sh
 # {{ ansible_managed }}
 screenfetch -n -d 'host distro kernel uptime disk cpu mem'
+echo
+echo "Running containers:"
+docker ps | tail -n +2 | awk '{print $2 " "$(NF)}' | column -t

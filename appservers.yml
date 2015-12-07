@@ -1,8 +1,0 @@
----
-# file: appservers.yml
-- hosts: appservers
-  roles:
-    - common
-    - appserver
-  vars_files:
-    - roles/appserver/vars/keys.yml
