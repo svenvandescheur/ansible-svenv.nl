@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+description "VPN container"
+author "Sven van de Scheur <svenvandescheur@gmail.com>"
+start on filesystem and started dnsmasq
+stop on runlevel [!2345]
+respawn
+normal exit 0
+script
+  /srv/vpn-docker/manage.sh restart
+end script

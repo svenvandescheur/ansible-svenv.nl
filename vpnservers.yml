@@ -1,0 +1,7 @@
+---
+# file: vpnservers.yml
+- hosts: vpnservers
+  roles:
+    - common
+  vars_files:
+    - roles/vpnserver/vars/keys.yml
