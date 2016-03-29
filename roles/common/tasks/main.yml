@@ -78,7 +78,7 @@
   apt: name=toilet state=present
 
 - name: install screenfetch
-  get_url: url=https://raw.github.com/KittyKatt/screenFetch/master/screenfetch-dev dest=/usr/local/bin/screenfetch
+  get_url: url=https://raw.githubusercontent.com/svenvandescheur/screenFetch/master/screenfetch-dev dest=/usr/local/bin/screenfetch
 
 - name: config screenfetch
   file: path=/usr/local/bin/screenfetch mode=0755
