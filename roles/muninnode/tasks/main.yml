@@ -7,4 +7,7 @@
   apt: name=munin-node state=present
 
 - name: 'config munin: add /etc/munin/munin-node.conf'
-  template: src=/etc/munin/munin-node.conf.j2 dest=/etc/munin/munin-node.conf
+  template: src=munin-node.conf.j2 dest=/etc/munin/munin-node.conf
+
+- name: reload munin-node service
+  service: name=munin-node state=reloaded

@@ -3,28 +3,31 @@
 - name: apt-get update
   apt: update_cache=yes
 
+- name: Install apt-transport-https
+  apt: name=apt-transport-https state=present
+
 - name: install ufw
   apt: name=ufw state=present
 
-- name: 'config ufw: reset ufw'
+- name: config ufw - reset ufw
   ufw: state=reset
 
-- name: 'config ufw: add /etc/default/ufw'
+- name: config ufw - add /etc/default/ufw
   template: src=ufw.j2 dest=/etc/default/ufw
 
-- name: 'config ufw: add /etc/ufw/sysctl.conf'
+- name: config ufw - add /etc/ufw/sysctl.conf
   template: src=sysctl.conf.j2 dest=/etc/ufw/sysctl.conf
 
-- name: 'config ufw: add /etc/ufw/before.rules'
+- name: config ufw - add /etc/ufw/before.rules
   template: src=before.rules.j2 dest=/etc/ufw/before.rules
 
-- name: 'config ufw: allow ssh'
+- name: config ufw - allow ssh'
   ufw: rule=allow port=22 proto=tcp
 
-- name: 'config ufw: allow docker'
+- name: config ufw - allow docker
   ufw: rule=allow port=2375 proto=tcp
 
-- name: 'config ufw: reject all other traffic'
+- name: config ufw - reject all other traffic
   ufw: state=enabled policy=deny
 
 - name: Speed up Ansible by purging landscape-common
@@ -62,11 +65,14 @@
 - name: install fish
   apt: name=fish state=present
 
-- name: config fish 1/2
-  user: name=root shell=/usr/bin/fish
+- name: Create fish directory
+  file: path=/root/.config/fish state=directory mode=0755
 
 - name: config fish 2/2
   template: src=config.fish.j2 dest=/root/.config/fish/config.fish
+
+- name: set fish as shell
+  user: name=root shell=/usr/bin/fish
 
 - name: install ncdu
   apt: name=ncdu state=present
@@ -92,20 +98,17 @@
 - name: configure update-motd 2/2
   template: src=10-help-text.j2 dest=/etc/update-motd.d/10-help-text
 
-- name: check for docker installation
-  command: docker -v
-  ignore_errors: yes
-  register: docker_check
-  changed_when: docker_check|failed
+- name: Add docker apt keys
+  apt_key: keyserver=p80.pool.sks-keyservers.net id=58118E89F3A912897C070ADBF76221572C52609D
 
-- name: download docker install script
-  # get_url: url=https://get.docker.com/ubuntu/ dest=/tmp/install_docker.sh
-  shell: curl https://get.docker.com/ > /tmp/install_docker.sh
-  when: docker_check|failed
+- name: Add docker repository apt
+  apt_repository: repo='deb https://apt.dockerproject.org/repo ubuntu-xenial main' state=present
 
-- name: install docker
-  command: /bin/bash /tmp/install_docker.sh
-  when: docker_check|failed
+- name: apt-get update
+  apt: update_cache=yes
+
+- name: Install Docker
+  apt: name=docker-engine state=present update_cache=yes
 
 - name: configure docker
   template: src=docker.j2 dest=/etc/default/docker
@@ -120,6 +123,3 @@
 
 - name: install docker-py
   pip: name=docker-py state=present
-
-- name: run apt-get upgrade
-  apt: upgrade=yes
