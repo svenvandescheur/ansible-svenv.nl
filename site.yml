@@ -8,8 +8,19 @@
   roles:
     - common
     - appserver
-    - vpnserver
     - muninnode
   vars_files:
     - roles/appserver/vars/keys.yml
+
+
+- hosts: vpnservers
+  gather_facts: False
+  pre_tasks:
+      - name: 'install python'
+        raw: sudo apt-get -y install python
+  roles:
+    - common
+    - vpnserver
+    - muninnode
+  vars_files:
     - roles/vpnserver/vars/keys.yml

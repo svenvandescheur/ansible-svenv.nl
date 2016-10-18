@@ -1,5 +1,5 @@
 [appservers]
-app1.svenv.nl env=production
+app1.svenv.nl
 
 [vpnservers]
-vpn.svenv.nl
+app1.svenv.nl

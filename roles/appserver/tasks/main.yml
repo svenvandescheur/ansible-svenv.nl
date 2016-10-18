@@ -6,76 +6,41 @@
 - name: 'config ufw: allow ssl'
   ufw: rule=allow port=443 proto=tcp
 
-- name: 'config ufw: allow mysql'
-  ufw: rule=allow port=3306 proto=tcp
+- name: 'clone docker-svenv.nl-data from github'
+  git: repo=https://github.com/svenvandescheur/docker-svenv.nl-data.git dest=/srv/docker-svenv.nl-data/ force=yes
 
-- name: clone svenv.nl-docker-data from github
-  git: repo=https://github.com/svenvandescheur/svenv.nl-docker-data.git dest=/srv/svenv.nl-docker-data force=yes
+- name: 'add ssh key to docker-svenv.nl-data'
+  copy: content="{{ id_rsa }}" dest=/srv/docker-svenv.nl-data/files/root/.ssh/id_rsa
 
-- name: add tarsnap key to docker
-  copy: content="{{ tarsnap }}" dest=/srv/svenv.nl-docker-data/files/root/tarsnap.key
+- name: 'add tarsnap key to docker-svenv.nl-data'
+  copy: content="{{ tarsnap_key }}" dest=/srv/docker-svenv.nl-data/files/srv/tarsnap/tarsnap.key
 
-- name: make sure the /srv/svenv.nl-docker-data/files/etc/ssl/certs/ directory exists
-  file: path=/srv/svenv.nl-docker-data/files/etc/ssl/certs/ state=directory
+- name: 'make sure the /srv/docker-svenv.nl-data/files/srv/tarsnap/ directory exists'
+  file: path=/srv/docker-svenv.nl-data/files/srv/tarsnap/ state=directory
 
-- name: add ssl certificate
-  copy: content="{{ svenv_nl_crt }}" dest=/srv/svenv.nl-docker-data/files/etc/ssl/certs/svenv.nl.crt
+- name: 'add tarsnap key to docker-svenv.nl-data'
+  copy: content="{{ tarsnap_key }}" dest=/srv/docker-svenv.nl-data/files/srv/tarsnap/tarsnap.key
 
-- name: add ssl certificate keyfile
-  copy: content="{{ svenv_nl_key }}" dest=/srv/svenv.nl-docker-data/files/etc/ssl/certs/svenv.nl.key
+- name: 'make sure the /srv/docker-svenv.nl-data/files/etc/ssl/certs/ directory exists'
+  file: path=/srv/docker-svenv.nl-data/files/etc/ssl/certs/ state=directory
 
-- name: add dh params
-  copy: content="{{ dhparams }}" dest=/srv/svenv.nl-docker-data/files/etc/ssl/certs/dhparams.pem
+- name: 'add ssl certificate'
+  copy: content="{{ svenv_nl_crt }}" dest=/srv/docker-svenv.nl-data/files/etc/ssl/certs/svenv.nl.crt
 
-- name: add environment file
-  template: src=environment.j2 dest=/srv/svenv.nl-docker-data/files/root/environment
+- name: 'add ssl certificate keyfile'
+  copy: content="{{ svenv_nl_key }}" dest=/srv/docker-svenv.nl-data/files/etc/ssl/certs/svenv.nl.key
 
-- name: build image
-#  docker_image:
-#    path=/srv/svenv.nl-docker-data
-#    name=svenv/svenv.nl-data
-#    nocache=yes
-#    state=build
-  shell: ./manage.sh build chdir=/srv/svenv.nl-docker-data/
+- name: 'add dh params'
+  copy: content="{{ dhparams_pem }}" dest=/srv/docker-svenv.nl-data/files/etc/ssl/certs/dhparams.pem
 
-- name: stop/start svenv/svenv.nl-data container
-#  docker:
-#    name: svenv.nl
-#    image: svenv/svenv.nl
-#    state: stopped
-  shell: ./manage.sh stop && ./manage.sh remove && ./manage.sh start chdir=/srv/svenv.nl-docker-data/
+- name: 'make sure the /srv/docker-svenv.nl-data/files/srv/uwsgi/ directory exists'
+  file: path=/srv/docker-svenv.nl-data/files/srv/uwsgi/ state=directory
 
-- name: clone svenv.nl-docker from github
-  git: repo=https://github.com/svenvandescheur/svenv.nl-docker.git dest=/srv/svenv.nl-docker force=yes
-  register: svenvnl
+- name: 'add Django secret key'
+  copy: content="{{ key_txt }}" dest=/srv/docker-svenv.nl-data/files/srv/uwsgi/key.txt
 
-- name: build image
-#  docker_image:
-#    path=/srv/svenv.nl-docker
-#    name=svenv/svenv.nl
-#    nocache=yes
-#    state=build
-  shell: ./manage.sh build chdir=/srv/svenv.nl-docker/
-  when: svenvnl.changed
+- name: 'add Django database password'
+  copy: content="{{ pw_txt }}" dest=/srv/docker-svenv.nl-data/files/srv/uwsgi/pw.txt
 
-- name: stop/start svenv/svenv.nl container
-#  docker:
-#    name: svenv.nl
-#    image: svenv/svenv.nl
-#    state: stopped
-  shell: ./manage.sh stop && ./manage.sh remove && ./manage.sh start chdir=/srv/svenv.nl-docker/
-
-#- name: start svenv/svenv.nl container
-#  docker:
-#    name: svenv.nl
-#    ports: [
-#      "80:80",
-#      "443:443",
-#      "3306:3306"
-#    ]
-#    image: svenv/svenv.nl
-#    docker_api_version: 1.18  # http://stackoverflow.com/questions/31459513
-#    state: started
-
-- name: add svenv.nl upstart job
-  template: src=svenv.nl.conf.j2 dest=/etc/init/svenv.nl.conf
+- name: 'build/start svenv.nl containers'
+  docker_service: project_src=/srv/docker-svenv.nl-data/ state=present build=yes restarted=yes
