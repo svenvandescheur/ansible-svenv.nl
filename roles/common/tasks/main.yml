@@ -9,9 +9,6 @@
 - name: 'install ufw'
   apt: name=ufw state=present
 
-- name: 'config ufw - reset ufw'
-  ufw: state=reset
-
 - name: 'config ufw - add /etc/default/ufw'
   template: src=ufw.j2 dest=/etc/default/ufw
 
@@ -85,7 +82,7 @@
   apt: name=toilet state=present
 
 - name: 'install screenfetch'
-  get_url: url=https://raw.githubusercontent.com/svenvandescheur/screenFetch/master/screenfetch-dev dest=/usr/local/bin/screenfetch
+  get_url: url=https://raw.githubusercontent.com/KittyKatt/screenFetch/master/screenfetch-dev dest=/usr/local/bin/screenfetch
 
 - name: 'config screenfetch'
   file: path=/usr/local/bin/screenfetch mode=0755
@@ -108,11 +105,11 @@
 - name: 'apt-get update'
   apt: update_cache=yes
 
-- name: 'Install Docker'
+- name: 'Install docker'
   apt: name=docker-engine state=present update_cache=yes
 
 - name: 'configure docker'
-  template: src=docker.j2 dest=/etc/default/docker
+  template: src=docker.conf.j2 dest=/etc/systemd/system/docker.service.d/docker.conf
   register: docker_config
 
 - name: 'restart docker'

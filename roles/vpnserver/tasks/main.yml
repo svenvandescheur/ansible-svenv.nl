@@ -3,57 +3,25 @@
 - name: 'config ufw: allow openvpn'
   ufw: rule=allow port=1194 proto=udp
 
-- name: 'clone dnsmasq-docker from github'
-  git: repo=https://github.com/svenvandescheur/dnsmasq-docker dest=/srv/dnsmasq-docker force=yes
-  register: dnsmasqdocker
-
-- name: 'build image'
-  shell: ./manage.sh build chdir=/srv/dnsmasq-docker/
-  when: dnsmasqdocker.changed
-
-- name: 'stop/start svenv/dnsmasq container'
-  shell: ./manage.sh stop && ./manage.sh remove && ./manage.sh start chdir=/srv/dnsmasq-docker/
-
-- name: 'add dnsmasq upstart job'
-  template: src=dnsmasq.conf.j2 dest=/etc/init/dnsmasq.conf
-
 - name: 'clone vpn-docker-data from github'
-  git: repo=https://github.com/svenvandescheur/vpn-docker-data dest=/srv/vpn-docker-data force=yes
-  register: vpndockerdata
+  git: repo=https://github.com/svenvandescheur/docker-openvpn-data.git dest=/srv/docker-openvpn-data force=yes
+  register: dockeropenvpndata
 
 - name: 'remove pki.zip'
-  file: path=/srv/vpn-docker-data/files/etc/openvpn/pki.zip state=absent
-  when: vpndockerdata.changed
+  file: path=/srv/docker-openvpn-data/files/etc/openvpn/pki.zip state=absent
+  when: dockeropenvpndata.changed
 
 - name: 'remove pki'
-  file: path=/srv/vpn-docker-data/files/etc/openvpn/pki state=absent
-  when: vpndockerdata.changed
+  file: path=/srv/docker-openvpn-data/files/etc/openvpn/pki state=absent
+  when: dockeropenvpndata.changed
 
 - name: 'decrypt pki.zip.gpg'
-  shell: echo '{{ pki_folder_key }}' | gpg --passphrase-fd 0 pki.zip.gpg chdir=/srv/vpn-docker-data/files/etc/openvpn/
-  when: vpndockerdata.changed
+  shell: echo '{{ pki_folder_key }}' | gpg --passphrase-fd 0 pki.zip.gpg chdir=/srv/docker-openvpn-data/files/etc/openvpn/
+  when: dockeropenvpndata.changed
 
 - name: 'unzip pki.zip'
-  shell: unzip pki.zip chdir=/srv/vpn-docker-data/files/etc/openvpn/
-  when: vpndockerdata.changed
+  shell: unzip pki.zip chdir=/srv/docker-openvpn-data/files/etc/openvpn/
+  when: dockeropenvpndata.changed
 
-- name: 'build image'
-  shell: ./manage.sh build chdir=/srv/vpn-docker-data/
-  when: vpndockerdata.changed
-
-- name: 'stop/start svenv/vpn-data container'
-  shell: ./manage.sh stop && ./manage.sh remove && ./manage.sh start chdir=/srv/vpn-docker-data/
-
-- name: 'clone vpn-docker from github'
-  git: repo=https://github.com/svenvandescheur/vpn-docker dest=/srv/vpn-docker force=yes
-  register: vpndocker
-
-- name: 'build image'
-  shell: ./manage.sh build chdir=/srv/vpn-docker/
-  when: vpndocker.changed
-
-- name: 'stop/start svenv/vpn container'
-  shell: ./manage.sh stop && ./manage.sh remove && ./manage.sh start chdir=/srv/vpn-docker/
-
-- name: 'add svenv.nl upstart job'
-  template: src=vpn.conf.j2 dest=/etc/init/vpn.conf
+- name: 'build/start openvpn containers'
+  docker_service: project_src=/srv/docker-openvpn-data/ state=present build=yes restarted=yes

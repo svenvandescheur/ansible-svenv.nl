@@ -1,0 +1,5 @@
+# {{ ansible_managed }}
+[Service]
+EnvironmentFile=-/etc/default/docker
+ExecStart=
+ExecStart=/usr/bin/dockerd --iptables=false -H fd://

@@ -7,10 +7,13 @@
   ufw: rule=allow port=443 proto=tcp
 
 - name: 'clone docker-svenv.nl-data from github'
-  git: repo=https://github.com/svenvandescheur/docker-svenv.nl-data.git dest=/srv/docker-svenv.nl-data/ force=yes
+  git: repo="https://github.com/svenvandescheur/docker-svenv.nl-data.git" dest="/srv/docker-svenv.nl-data/" force=yes
 
 - name: 'add ssh key to docker-svenv.nl-data'
   copy: content="{{ id_rsa }}" dest=/srv/docker-svenv.nl-data/files/root/.ssh/id_rsa
+
+- name: 'fix persmissions of ssh key'
+  file: path="/srv/docker-svenv.nl-data/files/root/.ssh/id_rsa" mode=0600
 
 - name: 'add tarsnap key to docker-svenv.nl-data'
   copy: content="{{ tarsnap_key }}" dest=/srv/docker-svenv.nl-data/files/srv/tarsnap/tarsnap.key

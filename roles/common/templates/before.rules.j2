@@ -1,6 +1,7 @@
 # {{ ansible_managed }}
 *nat
 :POSTROUTING ACCEPT [0:0]
+-A POSTROUTING ! -o br+ -j MASQUERADE
 -A POSTROUTING ! -o docker0 -s 172.17.0.0/16 -j MASQUERADE
 COMMIT
 *filter
